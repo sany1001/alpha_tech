@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SplashActivity"
+    android:background="@drawable/splash_bg"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:layout_width="282dp"
+        android:layout_height="212dp"
+        android:layout_marginTop="190dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/alpha_techpng" />
+
+    <ImageView
+        android:layout_width="368dp"
+        android:layout_height="233dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="59dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/plant" />
+
+</RelativeLayout>
