@@ -45,58 +45,59 @@ import java.util.Timer;
 import javax.xml.transform.ErrorListener;
 
 public class MainActivity extends AppCompatActivity {
-    String key= "aio_LGge72CsFbH3rCXFOamJlCmKGG9C";
-    Button fetch;
+    String key= "aio_ldRB11HiNXqHEb1sfvrEai41TPUJ";
     ArrayList<Integer> datalist;
     ArrayAdapter<Integer> adapter;
-
+    Handler handler=new Handler();
+    RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fetch=findViewById(R.id.fetch);
         datalist=new ArrayList<>();
         adapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,datalist);
         ListView listView=findViewById(R.id.display);
         listView.setAdapter(adapter);
-
-        RequestQueue requestQueue;
         Cache cache=new NoCache();
         Network network = new BasicNetwork(new HurlStack());
         requestQueue = new RequestQueue(cache, network);
         requestQueue.start();
-        fetch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url="https://io.adafruit.com/api/v2/sanskar1001/feeds/tempfeed/data?x-aio-key="+key;
-                JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        datalist.clear();
-                        for(int i=0;i<response.length();i++)
-                        {
-                            try {
-                                JSONObject obj=response.getJSONObject(i);
-                                int data=obj.getInt("value");
-                                Log.d("data",data+"");
-                                datalist.add(data);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println(error.getMessage());
-                    }
-                });
-                jsonArrayRequest.setShouldCache(false);
-                requestQueue.add(jsonArrayRequest);
-            }
-        });
+        runnable.run();
     }
+    Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+
+            String url="https://io.adafruit.com/api/v2/sanskar1001/feeds/tempfeed/data?x-aio-key="+key;
+            JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    datalist.clear();
+                    for(int i=0;i<response.length();i++)
+                    {
+                        try {
+                            JSONObject obj=response.getJSONObject(i);
+                            int data=obj.getInt("value");
+                            Log.d("data",data+"");
+                            datalist.add(data);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    System.out.println(error.getMessage());
+                }
+            });
+            jsonArrayRequest.setShouldCache(false);
+            requestQueue.add(jsonArrayRequest);
+
+            handler.postDelayed(this,1500);
+        }
+    };
     @Override
     protected void onDestroy() {
         super.onDestroy();
